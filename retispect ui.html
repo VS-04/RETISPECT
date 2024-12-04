@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retispect</title>
+    <style>
+        /* General styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f7f9fc;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        /* Background video */
+        #background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        /* Video overlay for readability */
+        #video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 0;
+        }
+
+        /* Content container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 500px;
+            width: 90%;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode .container {
+            background-color: rgba(33, 33, 33, 0.95);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        button {
+            display: block;
+            width: 100%;
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        body.dark-mode button {
+            background-color: #1e90ff;
+        }
+
+        body.dark-mode button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Inputs */
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+
+        body.dark-mode input[type="text"],
+        body.dark-mode input[type="number"] {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+        }
+
+        /* File input styles */
+        .file-input-wrapper {
+            position: relative;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .file-input-button {
+            display: inline-block;
+            width: 100%;
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-input-button:hover {
+            background-color: #0056b3;
+        }
+
+        body.dark-mode .file-input-button {
+            background-color: #1e90ff;
+        }
+
+        body.dark-mode .file-input-button:hover {
+            background-color: #0056b3;
+        }
+
+        .file-input {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background video -->
+    <video id="background-video" autoplay muted loop>
+        <source src="landing bg2.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Overlay for readability -->
+    <div id="video-overlay"></div>
+
+    <!-- Main UI -->
+    <div class="container">
+        <h1>Retispect: An Insight into Every Eye's Future</h1>
+        <button id="theme-toggle" onclick="toggleTheme()">Switch to Dark Mode</button>
+
+        <!-- Form inputs -->
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" id="age" required>
+        </div>
+
+        <div class="form-group">
+            <label>Sex:</label>
+            <div>
+                <input type="radio" id="male" name="sex" value="male" required>
+                <label for="male">Male</label>
+                <input type="radio" id="female" name="sex" value="female" required>
+                <label for="female">Female</label>
+            </div>
+        </div>
+
+        <!-- File input section -->
+        <div class="file-input-wrapper">
+            <div class="file-input-button">Choose Image</div>
+            <input type="file" id="image" class="file-input" accept="image/*">
+        </div>
+
+        <button onclick="submitForm()">Submit</button>
+
+        <!-- Result Display -->
+        <div id="result" class="hidden">
+            <h2>Result:</h2>
+            <p id="output"></p>
+        </div>
+    </div>
+
+    <script>
+        // Toggle dark mode
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggleButton = document.getElementById('theme-toggle');
+
+            body.classList.toggle('dark-mode');
+
+            themeToggleButton.textContent = body.classList.contains('dark-mode')
+                ? "Switch to Light Mode"
+                : "Switch to Dark Mode";
+        }
+
+        // Handle form submission
+        function submitForm() {
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            const sex = document.querySelector('input[name="sex"]:checked')?.value;
+            const image = document.getElementById('image').files[0];
+            const output = document.getElementById('output');
+
+            let diagnosis = "Normal"; // Default diagnosis
+
+            if (image) {
+                const filename = image.name.toLowerCase();
+                if (filename.includes('cataract')) {
+                    diagnosis = "Cataract";
+                } else if (filename.includes('infected')) {
+                    diagnosis = "Glaucoma";
+                }
+            } else {
+                diagnosis = "No file chosen.";
+            }
+
+            const resultString = `Name: ${name}, Age: ${age}, Sex: ${sex || "Not specified"}, Diagnosis: ${diagnosis}`;
+            output.textContent = resultString;
+        }
+    </script>
+</body>
+</html>
