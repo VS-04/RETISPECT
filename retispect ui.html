@@ -1,3 +1,6 @@
+Here’s the complete updated file incorporating the random surety percentage in the results:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -252,9 +255,13 @@
                 diagnosis = "No file chosen.";
             }
 
-            const resultString = `Name: ${name}, Age: ${age}, Sex: ${sex || "Not specified"}, Diagnosis: ${diagnosis}`;
+            // Generate random surety percentage between 90% and 100%
+            const surety = Math.floor(Math.random() * 11) + 90; // Random number from 90 to 100
+
+            const resultString = `Name: ${name}, Age: ${age}, Sex: ${sex || "Not specified"}, Diagnosis: ${diagnosis}, Surety: ${surety}%`;
             output.textContent = resultString;
         }
     </script>
 </body>
 </html>
+```
